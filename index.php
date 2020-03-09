@@ -34,13 +34,13 @@ header("location: home.php");
         <form action="login.php" method="post">
           <div class="form-group">
             <div class="form-label-group">
-              <input type="text" name="username" class="form-control" placeholder="Username" required="required" autofocus="autofocus">
+              <input type="text" name="username" class="form-control" required="required" autofocus="autofocus">
               <label for="username">Username</label>
             </div>
           </div>
           <div class="form-group">
             <div class="form-label-group">
-              <input type="password" name="password" class="form-control" placeholder="Password" required="required">
+              <input type="password" name="password" class="form-control" required="required">
               <label for="password">Password</label>
             </div>
           </div>
