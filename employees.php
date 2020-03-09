@@ -2,21 +2,20 @@
 <?php
 include 'login.php';
 require 'mysql.php';
-$_SESSION['visible']="display:none";
-$_SESSION ['employee']="display:none";
-if(!isset($_SESSION['login_user'])){
-  header("location: index.php");
+
+
+if($_SESSION['userType']=="Accountant")
+  {
+    $userCtrl="display:none";
+  }
+  else{
+    $userCtrl="";
   }
 
-  if($_SESSION['userType']=="Admin")
-  {
-    $_SESSION['visible']  = "display";
-    $_SESSION['employee'] ="display";
-  }
-  if($_SESSION['userType']=="Accountant")
-  {
-    $_SESSION['visible']="display";
-  }
+
+  $sql= "select * from tbl_employees ";
+
+  $result=mysqli_query($conn,$sql);
 
 
 ?>
@@ -26,90 +25,111 @@ if(!isset($_SESSION['login_user'])){
 <html lang="en">
 
 <head>
-
+   
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 
   <title>EPMS</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="customstyle.css" rel="stylesheet" type="text/css">
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  
+  
   <!-- Page level plugin CSS-->
-  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  
 
   <!-- Custom styles for this template-->
+
   <link href="css/sb-admin.css" rel="stylesheet">
+  <script src="jquery.tabledit.min.js" ></script>
+<script type="text/javascript">
+    function selectAll() {
+        var items = document.getElementsByName('deleteKey[]');
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].type == 'checkbox')
+              if(items[i].checked==true){
+
+                  items[i].checked=false;
+
+              }
+              else{
+                items[i].checked = true;
+              }
+              
+        }
+    }
+</script>
+  
 
 </head>
 
 <body id="page-top">
 
-<nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-    <table style="table-layout:auto" width=100%>
-      <td width=90%>
-    <a class="navbar-brand mr-1" href="home.php">Employee Payroll Management System</a>
-    <td width=5%><a href="myprofile.php">My Profile</a></td>
-    <td width=5%> <a href="payslips.php">Payslips</a></td>
-</td>
-<td >
-<form>
-      <input type="text" placeholder="Search..">
-        </form>
+<nav class="navbar-dark bg-dark">
     
-</td>
-<td align="right">
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="home.php">
+      
+      <img src="brandicon.png" width="150" height="60" alt="">
+      Employee Payroll Management System</a>
    
-       
-        <ul class="navbar-nav ml-auto ml-md-0">
-        <table width=100% style="table-layout:auto" align="right">
-          <td><a  href="logout.php">Logout</a></td>
-        </table>
-       
+
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="myprofile.php">My Profile <span class="sr-only">(current)</span></a>
       </li>
-    </ul>
-     
-</td>
-</table>
-  </nav>
+      <li class="nav-item">
+        
+      <li class="nav-item"><form action="logout.php">
+          <input type="submit" value="Logout" a href="logout.php">
+            </form>
+          </li>
+
+</ul>
+  </div>
+  
+
+  </div>
+</nav>
+
+
+
+  
 
   <div id="wrapper">
 
   
-    <ul class="sidebar navbar-nav">
+  <ul class="sidebar navbar-nav">
     <li class="nav-item " >
         <a class="nav-link" href="home.php">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>DashBoard</span>
         </a>
       </li>
-      <li class="nav-item" >
-        <a class="nav-link" href="markatt.php">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Mark Attendance</span>
-        </a>
-      </li>
-
-      <li class="nav-item" style="<?php echo $_SESSION['visible'] ?>">
-          <a class="nav-link" href="attendance.php">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Attendance</span></a>
-        </li>
-      <li class="nav-item" style="<?php echo $_SESSION['visible'] ?>">
+      
+      <li class="nav-item">
         <a class="nav-link" href="payments.php">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Payments</span></a>
       </li>
-      <li class="nav-item active" style="<?php echo $_SESSION['employee'] ?>">
+      <li class="nav-item ">
+        <a class="nav-link" href="payhistory.php">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Payments History</span></a>
+      </li>
+      <li class="nav-item active" style ="<?php echo $userCtrl?>">
         <a class="nav-link" href="employees.php">
           <i class="fas fa-fw fa-table"></i>
           <span>Employees</span></a>
       </li>
     </ul>
+
 
     <div id="content-wrapper">
 
@@ -134,41 +154,11 @@ if(!isset($_SESSION['login_user'])){
         <div class="card mb-3">
           <div class="card-header">
             <i class="fas fa-table"></i>
-           Employees</div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0" contenteditable="true">
-              <tr >
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Address</th>
-                <th>Mobile No</th>
-                <th>Password</th>
-                
-              </tr>
-              <?php while($row1 =mysqli_fetch_array($result1)):;?>
-              <tr>
-                <td><?php echo $row1[0];?></td>
-                <td><?php echo $row1[1];?></td>
-                <td><?php echo $row1[2];?></td>
-              </tr>
-              <?php endwhile;?>
-              </table>
-              <form>
-                <input type="submit" value ="Update Employee">
-                
-                <input type="submit" value ="Delete Employee">
-              </form>
-            </div>
-          </div>
-          <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas fa-table"></i>
            Add Employee</div>
           <div class="card-body">
             <div class="table-responsive">
               <div  style="padding-top:20px">
-                <form >
+                <form method="post" action="addEmp.php">
                   <table>
                   <col width ="150">
                   <col width ="100">
@@ -176,7 +166,7 @@ if(!isset($_SESSION['login_user'])){
                 <td>
                 <label>Employee Id</label> </td>
                 <td>
-                 <input type="text" name="empID" > </td>
+                 <input type="text" name="empId" > </td>
                
 </tr>
 <tr>
@@ -190,37 +180,20 @@ if(!isset($_SESSION['login_user'])){
                 <td>
                 <label>Address</label></td>
                 <td>
-                <input type="text" name="address" > </td>
+                <input type="text" name="empAd" > </td>
 </tr>
 <tr>
                 <td>
                 <label>Mobile No</label></td>
                 <td>
-                <input type="text" name="mobileNo" ></td>
+                <input type="text" name="empNo" ></td>
 </tr>
-<tr>
 
-                <td>
-                <label>Password</label></td>
-                <td>
-                <input type="text" name="password" ></td>
-</tr>
-<tr>
-                <td>
-                <label>Employee Type</label> </td>
-
-                <td>
-                <select name="cars">
-                      <option value="employee">Employee</option>
-                      <option value="admin">Admninstrator</option>
-                      <option value="accountant">Accountant</option>
-                  </select></td>
-</tr>
 <tr>
   <td></td>
-  <td><form>
-             
-             <input type ="submit" value="Add Employee">
+  <td>
+             <input type ="submit" value="Add Employee" class="btn btn-info">
+
            </form>
   </td>
 
@@ -237,15 +210,61 @@ if(!isset($_SESSION['login_user'])){
         
                 
               
-                
-                </form>
-                
-            
+
               </div>
             </div>
              
             </div>
           </div>
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+           Employees</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped" id="dataTable">
+              <thead>
+              <tr >
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Address</th>
+                <th>Mobile No</th>
+                <form action="delete.php" method="post" >
+                <th><input type="checkbox" class="checkbox" name="deleteKey[]" onclick="selectAll()"></th>
+                
+              </tr>
+              </thead>
+              <tbody>
+              <?php while($row2=mysqli_fetch_array($result))
+              {
+                $id=$row2["emp_Id"];
+                echo '
+                <tr>
+                
+                <td>'.$row2["emp_Id"].'</td>
+                <td>'.$row2["emp_name"].'</td>
+                <td>'.$row2["emp_address"].'</td>
+                <td>'.$row2["emp_no"].'</td>
+                
+                <td> <input type="checkbox" class="checkbox" name="deleteKey[]" value="'.$id.'"></td>
+               
+                
+              ';
+        
+              }
+               ?>
+
+                  
+               </tbody>
+              </table>
+            <input type="submit" name="btnDelete" value ="Delete Employee" class="btn btn-info">
+            </form>
+                
+          
+            
+            </div>
+          </div>
+          
           
         </div>
         

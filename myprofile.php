@@ -30,33 +30,36 @@
 
 <body id="page-top">
 
-<nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-    <table style="table-layout:auto" width=100%>
-      <td width=90%>
-    <a class="navbar-brand mr-1" href="home.php">Employee Payroll Management System</a>
-    <td width=5%><a href="myprofile.php">My Profile</a></td>
-    <td width=5%> <a href="payslips.php">Payslips</a></td>
-</td>
-<td >
-<form>
-      <input type="text" placeholder="Search..">
-        </form>
+<nav class="navbar-dark bg-dark">
     
-</td>
-<td align="right">
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="home.php">
+      
+      <img src="brandicon.png" width="150" height="60" alt="">
+      Employee Payroll Management System</a>
    
-       
-        <ul class="navbar-nav ml-auto ml-md-0">
-        <table width=100% style="table-layout:auto" align="right">
-          <td><a  href="logout.php">Logout</a></td>
-        </table>
-       
+
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="myprofile.php">My Profile <span class="sr-only">(current)</span></a>
       </li>
-    </ul>
-     
-</td>
-</table>
-  </nav>
+      <li class="nav-item">
+        
+      <li class="nav-item"><form action="logout.php">
+          <input type="submit" value="Logout" a href="logout.php">
+            </form>
+          </li>
+
+</ul>
+  </div>
+  
+
+  </div>
+</nav>
+
 
   <div id="wrapper">
 
