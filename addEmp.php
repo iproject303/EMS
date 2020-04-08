@@ -3,27 +3,44 @@
 require 'mysql.php';
 
 
-  $empid=$_POST["empId"];
+  $empid=(int)$_POST["empId"];
   $empname=$_POST["empName"];
   $empAd=$_POST["empAd"];
-  $empno=$_POST["empNo"];
+  $empno=(int)$_POST["empNo"];
+  $staff=$_POST["stype"];
 
+if(empty($empid))
+{
+ header("location:employees.php");
+}
+else{
 
-  $intemp=(int)$empid;
-  $intno=(int)$empno;
-
-  $sql2 = "insert into tbl_employees VALUES ($intemp,'$empname','$empAd',$intno)";
+  $sql2 = "insert into tbl_employees VALUES ($empid,'$empname','$empAd',$empno,'$staff')";
   if(mysqli_query($conn,$sql2))
   {
-    $_SESSION ['status']="success";
+    
+    echo "<script> 
+     
+        
+        alert('Succesfully Added Employee');
+        window.location.replace(\"employees.php\");
+        
+        </script>";
     
   }
+  
   else
   {
-    $_SESSION['status']="unsuccess";
+    echo "<script> 
+     
+        
+        alert('Error adding Employee, Please ensure all the fields are correctly entered.');
+        window.location.replace(\"employees.php\");
+        
+        </script>";
  
   }
-
-header("Location: employees.php");
+mysqli_close($conn);
+}
 
 ?>

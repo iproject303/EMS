@@ -25,40 +25,26 @@
         document.profile.password.type=(document.profile.option.value=(document.profile.option.value==1)?'-1':'1')=='1'?'password':'text';
     }
 </script>
-
+<script type="text/javascript" src="sysTime.js"> </script>
 </head>
 
-<body id="page-top">
-
+<body id="page-top" onload="startTime()" >
 <nav class="navbar-dark bg-dark">
-    
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="home.php">
-      
-      <img src="brandicon.png" width="150" height="60" alt="">
-      Employee Payroll Management System</a>
-   
+ 
+      <a class="navbar-brand" href="home.php">
+          
+          <img src="brandicon.png" width="150" height="60" >
+          Employee Payroll Management System</a>
 
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="myprofile.php">My Profile <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
+          <div class="navbar-brand"  id="time"></div>
         
-      <li class="nav-item"><form action="logout.php">
-          <input type="submit" value="Logout" a href="logout.php">
-            </form>
-          </li>
+    
+            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+      
+          <a class="navbar-brand" href="logout.php">Logout </a>
 
-</ul>
-  </div>
-  
+    </nav>
 
-  </div>
-</nav>
 
 
   <div id="wrapper">

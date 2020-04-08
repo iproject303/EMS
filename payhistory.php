@@ -12,6 +12,8 @@ if(!isset($_SESSION['login_user'])){
     $userCtrl="display:none";
   }
  
+  $sql="select * from tbl_payhistory";
+  $result=mysqli_query($conn,$sql);
 
 
 ?>
@@ -38,40 +40,53 @@ if(!isset($_SESSION['login_user'])){
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
-
-</head>
-
-<body id="page-top">
-<nav class="navbar-dark bg-dark">
-    
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="home.php">
-      
-      <img src="brandicon.png" width="150" height="60" alt="">
-      Employee Payroll Management System</a>
-   
-
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="myprofile.php">My Profile <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        
-      <li class="nav-item"><form action="logout.php">
-          <input type="submit" value="Logout" a href="logout.php">
-            </form>
-          </li>
-
-</ul>
-  </div>
+  <script type="text/javascript" src="sysTime.js"> </script>
+  <script type="text/javascript" src="formulas.js"></script>
+  <script type="text/javascript">
   
+  function search() {
 
-  </div>
-</nav>
+var input, filter, table, tr, td, i, txtValue;
+input = document.getElementById("searchemp");
+filter = input.value.toUpperCase();
+table = document.getElementById("editable_table");
+tr = table.getElementsByTagName("tr");
 
+
+for (i = 0; i < tr.length; i++) {
+ 
+  td = tr[i].getElementsByTagName("td")[0];
+  if (td) {
+    txtValue = td.textContent || td.innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      tr[i].style.display = "";
+    } else {
+      tr[i].style.display = "none";
+    }
+  }
+
+}
+}
+</script>
+
+  </head>
+
+<body id="page-top" onload="startTime()" >
+<nav class="navbar-dark bg-dark">
+ 
+      <a class="navbar-brand" href="home.php">
+          
+          <img src="brandicon.png" width="150" height="60" >
+          Employee Payroll Management System</a>
+
+          <div class="navbar-brand"  id="time"></div>
+        
+    
+            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+      
+          <a class="navbar-brand" href="logout.php">Logout </a>
+
+    </nav>
 
   <div id="wrapper">
 
@@ -124,25 +139,54 @@ if(!isset($_SESSION['login_user'])){
             <i class="fas fa-table"></i>
            Payments History</div>
           <div class="card-body">
+          <div align="right">
+            <label> <b> Search : </b> </label>
+            <input type="text" id="searchemp" onkeyup="search()"></div>
             <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <tr >
-                <th>Employee ID</th>
+            <table id="editable_table" class="table table-bordered" >
+                <thead>
+                  <tr>
+                <th>Employee ID</th>    
                 <th>Payment ID</th>
                 <th>Employee Name</th>
                 <th>Start date</th>
                 <th>End date</th>
-                <th>Total Hours</th>
-                <th>Payment Date</th>  
-              </tr>
-              <?php while($row1 =mysqli_fetch_array($result1)):;?>
-              <tr>
-                <td><?php echo $row1[0];?></td>
-                <td><?php echo $row1[1];?></td>
-                <td><?php echo $row1[2];?></td>
-              </tr>
-              <?php endwhile;?>
+                <th>Total Hours</th>  
+                <th>Salary ($)</th>
+                <th>Payment Added Date</th>
+                <th>Pay Status</th>
+                <form action="deletePay.php" method="post" >
+                <th><input type="checkbox" class="checkbox" name="selectKey[]" onclick="selectAll()"></th>
+                </tr>
+                </thead>
+                <tbody>
+               <?php while($row=mysqli_fetch_array($result))
+              {
+                $payid=$row["pay_id"];
+                echo '
+                <tr>
+                <td>'.$row["emp_id"].'</td>
+                <td>'.$row["pay_id"].'</td>
+                <td>'.$row["emp_name"].'</td>
+                <td>'.$row["start_date"].'</td>
+                <td>'.$row["end_date"].'</td>
+                <td>'.$row["tot_hours"].'</td>
+                <td>'.$row["salary"].'</td>
+                <td>'.$row["pay_date"].'</td>
+                <td>'.$row["paystat"].'</td>
+
+                <td> <input type="checkbox" class="checkbox" name="deleteKey[]" value="'.$payid.'"></td>
+               
+                </tr>
+              ';
+        
+              }
+               ?>
+
+                  
+               </tbody>
               </table>
+             
             </div>
           </div>
           
@@ -174,6 +218,7 @@ if(!isset($_SESSION['login_user'])){
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 
   <!-- Core plugin JavaScript-->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>

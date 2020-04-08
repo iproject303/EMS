@@ -19,38 +19,26 @@
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
-  
+  <script type="text/javascript" src="sysTime.js"> </script>
 </head>
 
 <body id="page-top">
+<nav class="navbar-dark bg-dark">
+ 
+      <a class="navbar-brand" href="home.php">
+          
+          <img src="brandicon.png" width="150" height="60" >
+          Employee Payroll Management System</a>
 
-<nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-    <table style="table-layout:auto" width=100%>
-      <td width=90%>
-    <a class="navbar-brand mr-1" href="home.php">Employee Payroll Management System</a>
-    <td width=5%><a href="myprofile.php">My Profile</a></td>
-    <td width=5%> <a href="payslips.php">Payslips</a></td>
-</td>
-<td >
-<form>
-      <input type="text" placeholder="Search..">
-        </form>
+          <div class="navbar-brand"  id="time"></div>
+        
     
-</td>
-<td align="right">
-   
-       
-        <ul class="navbar-nav ml-auto ml-md-0">
-        <table width=100% style="table-layout:auto" align="right">
-          <td><a  href="logout.php">Logout</a></td>
-        </table>
-       
-      </li>
-    </ul>
-     
-</td>
-</table>
-  </nav>
+            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+      
+          <a class="navbar-brand" href="logout.php">Logout </a>
+
+    </nav>
+
 
   <div id="wrapper">
 

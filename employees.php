@@ -12,14 +12,28 @@ if($_SESSION['userType']=="Accountant")
     $userCtrl="";
   }
 
-
   $sql= "select * from tbl_employees ";
-
   $result=mysqli_query($conn,$sql);
 
 
-?>
+  if(isset($_GET['edit']))
+  {
+  $empid= $_GET['edit'];
+  $sql1="select * from tbl_employees where emp_Id=$empid";
+  $result1=mysqli_query($conn,$sql1);
+  $row=mysqli_fetch_array($result1);
 
+  $hiddenattr="hidden";
+  $colattr="Update";
+  $idattr="readonly";
+  
+  }
+  else{
+    $colattr="Add";
+    $btnCancel="hidden";
+
+  }
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +49,7 @@ if($_SESSION['userType']=="Accountant")
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="customstyle.css" rel="stylesheet" type="text/css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
   
   
   <!-- Page level plugin CSS-->
@@ -43,62 +57,84 @@ if($_SESSION['userType']=="Accountant")
 
   <!-- Custom styles for this template-->
 
-  <link href="css/sb-admin.css" rel="stylesheet">
-  <script src="jquery.tabledit.min.js" ></script>
+  <link href="css/sb-admin.css" rel="stylesheet"> 
+
+<script type="text/javascript" src="sysTime.js"> </script>
+<script type="text/javascript" src="formulas.js"> </script>
+
 <script type="text/javascript">
-    function selectAll() {
-        var items = document.getElementsByName('deleteKey[]');
-        for (var i = 0; i < items.length; i++) {
-            if (items[i].type == 'checkbox')
-              if(items[i].checked==true){
 
-                  items[i].checked=false;
+function clear()
+{
+document.getElementById("searchemp").value='';
+}
 
-              }
-              else{
-                items[i].checked = true;
-              }
-              
-        }
+
+function search() {
+
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("searchemp");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("editable_table");
+  tr = table.getElementsByTagName("tr");
+
+ 
+  for (i = 0; i < tr.length; i++) {
+   
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
     }
-</script>
   
+  }
+}
+
+function myFunction() {
+ 
+}
+
+
+function submitForm(action)
+    {
+      var number = document.getElementById('empno').value;
+      var compare = "/^[0-9]{1,10}$/g";
+      if (number.match(compare)) {
+        return true;
+        document.getElementById('empform').action = action;
+        document.getElementById('empform').submit();
+
+      } else {
+       alert(number);
+      return false;
+  }
+        
+    }
+
+</script>
 
 </head>
 
-<body id="page-top">
-
+<body id="page-top" onload="startTime()">
 <nav class="navbar-dark bg-dark">
-    
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="home.php">
-      
-      <img src="brandicon.png" width="150" height="60" alt="">
-      Employee Payroll Management System</a>
-   
+ 
+      <a class="navbar-brand" href="home.php">
+          
+          <img src="brandicon.png" width="150" height="60" >
+          Employee Payroll Management System</a>
 
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="myprofile.php">My Profile <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
+          <div class="navbar-brand"  id="time"></div>
         
-      <li class="nav-item"><form action="logout.php">
-          <input type="submit" value="Logout" a href="logout.php">
-            </form>
-          </li>
+    
+            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+      
+          <a class="navbar-brand" href="logout.php">Logout </a>
 
-</ul>
-  </div>
-  
-
-  </div>
-</nav>
-
-
+    </nav>
 
   
 
@@ -154,11 +190,11 @@ if($_SESSION['userType']=="Accountant")
         <div class="card mb-3">
           <div class="card-header">
             <i class="fas fa-table"></i>
-           Add Employee</div>
+           <?php echo $colattr;?> Employee</div>
           <div class="card-body">
             <div class="table-responsive">
               <div  style="padding-top:20px">
-                <form method="post" action="addEmp.php">
+                <form id="empform" method="post" >
                   <table>
                   <col width ="150">
                   <col width ="100">
@@ -166,34 +202,74 @@ if($_SESSION['userType']=="Accountant")
                 <td>
                 <label>Employee Id</label> </td>
                 <td>
-                 <input type="text" name="empId" > </td>
+                 <input <?php echo $idattr; ?> type="text" name="empId" value="<?php echo $row['emp_Id']; ?>" > </td>
                
 </tr>
 <tr>
   <td>
                 <label>Employee Name</label> </td>
                 <td>
-                <input type="text" name="empName" ></td>
+                <input type="text" name="empName" value="<?php echo $row['emp_name']; ?>"  ></td>
 </tr>
 <tr>
 
                 <td>
                 <label>Address</label></td>
                 <td>
-                <input type="text" name="empAd" > </td>
+                <input type="text"   name="empAd" value="<?php echo $row['emp_address']; ?>"> </td>
 </tr>
 <tr>
                 <td>
                 <label>Mobile No</label></td>
                 <td>
-                <input type="text" name="empNo" ></td>
+                <input type="text" id="empno"  name="empNo"value="<?php echo $row['emp_no']; ?>" ></td>
 </tr>
-
 <tr>
-  <td></td>
-  <td>
-             <input type ="submit" value="Add Employee" class="btn btn-info">
+                <td>
+                <label>Staff Type</label></td>
+                <td><select name="stype">
+                <?php 
 
+                if(isset($_GET['edit'])){
+                
+                  if($row['staff_type']=="ACADEMIC")
+                  {
+                  echo'
+                  <option selected="selected" value="ACADEMIC">ACADEMIC</option>
+                  <option value="NON-ACADEMIC">NON-ACADEMIC</option>
+                  ';
+                  }
+                  else 
+                  {
+                    echo'
+                    <option value="ACADEMIC">ACADEMIC</option>
+                    <option selected="selected" value="NON-ACADEMIC">NON-ACADEMIC</option>
+                  ';
+                  }
+                }
+                else
+                {
+                echo'
+                <option disabled selected="selected"> Select Staff Type </option>';
+                $rpayrates=mysqli_query($conn,"select staff_type from tbl_payrates");
+                while($rowpays=mysqli_fetch_array($rpayrates)){
+                 echo'
+                   
+                    <option value="'.$rowpays["staff_type"].'">'.$rowpays["staff_type"].'</option>
+                    ';
+                  
+                }
+              }
+                  ?>
+                </select></td>
+              
+</tr>
+<tr>
+ 
+  <td>
+             <input type ="submit" value="Add Employee" id="btnadd" <?php echo $hiddenattr; ?> class="btn btn-info" onclick="submitForm('addEmp.php')"></td>
+            <td> <input type =submit id="updatebtn" value ="Update Employee" class="btn btn-info" <?php echo $btnCancel; ?> onclick="submitForm('updateEmp.php')"></td>
+            <td><input type =submit id="clearbtn" value ="Cancel" class="btn btn-info" <?php echo $btnCancel; ?> onclick="clear();window.history.go(-1); return false;" >
            </form>
   </td>
 
@@ -219,18 +295,24 @@ if($_SESSION['userType']=="Accountant")
         <div class="card mb-3">
           <div class="card-header">
             <i class="fas fa-table"></i>
-           Employees</div>
+           Employees
+          </div>
           <div class="card-body">
+            <div align="right">
+            <label> <b> Search : </b> </label>
+            <input type="text" id="searchemp" onkeyup="search()"></div>
             <div class="table-responsive">
-              <table class="table table-bordered table-striped" id="dataTable">
+            <table  id="editable_table" class="table table-bordered table-striped">
               <thead>
-              <tr >
+              <tr>
                 <th>Employee ID</th>
                 <th>Employee Name</th>
                 <th>Address</th>
                 <th>Mobile No</th>
-                <form action="delete.php" method="post" >
-                <th><input type="checkbox" class="checkbox" name="deleteKey[]" onclick="selectAll()"></th>
+                <th>Staff Type</th>
+                <th <?php echo $hiddenattr ?> ></th>
+                <form action="deleteEmp.php" method="post" >
+                <th <?php echo $hiddenattr?> ><input type="checkbox" class="checkbox" name="selectKey[]" onclick="selectAll()"></th>
                 
               </tr>
               </thead>
@@ -241,14 +323,15 @@ if($_SESSION['userType']=="Accountant")
                 echo '
                 <tr>
                 
-                <td>'.$row2["emp_Id"].'</td>
-                <td>'.$row2["emp_name"].'</td>
-                <td>'.$row2["emp_address"].'</td>
+                <td >'.$row2["emp_Id"].'</td>
+                <td >'.$row2["emp_name"].'</td>
+                <td >'.$row2["emp_address"].'</td>
                 <td>'.$row2["emp_no"].'</td>
-                
-                <td> <input type="checkbox" class="checkbox" name="deleteKey[]" value="'.$id.'"></td>
+                <td >'.$row2["staff_type"].'</td>
+                <td '.$hiddenattr.'  ><a href="employees.php?edit='.$id.'" class="btn btn-info" ">Edit</a></td>
+                <td '.$hiddenattr.'> <input type="checkbox" class="checkbox" name="deleteKey[]" value="'.$id.'"></td>
                
-                
+                </tr>
               ';
         
               }
@@ -257,10 +340,10 @@ if($_SESSION['userType']=="Accountant")
                   
                </tbody>
               </table>
-            <input type="submit" name="btnDelete" value ="Delete Employee" class="btn btn-info">
-            </form>
-                
-          
+            <input type="submit" id="deletebtn" name="btnDelete" value ="Delete Employee" <?php echo $hiddenattr ?> class="btn btn-info" > </form>
+            <br>
+            <br>
+            
             
             </div>
           </div>
@@ -292,17 +375,19 @@ if($_SESSION['userType']=="Accountant")
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
+ 
   
   <!-- Bootstrap core JavaScript-->
+ 
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
   <!-- Core plugin JavaScript-->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin.min.js"></script>
-
+  
+ 
 
 </body>
 
