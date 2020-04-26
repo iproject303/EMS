@@ -23,6 +23,6 @@ if(isset($_POST['btnDelete']))
         }
     }
 
-   // header("location:employees.php");
+
 
 ?>
