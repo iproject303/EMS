@@ -193,7 +193,7 @@ function revealPass(){
                 <td>
                 <label>Password</label></td>
                 <td>
-                <input type="password" onClick="this.select();"   name="userPwd" id="userPwd" value="<?php echo $pwd1; ?>"> </td>
+                <input type="password" onClick="this.select();"   name="userPwd" id="userPwd" > </td>
                 <td id="passfield" style="padding-left:10px" ><input type="checkbox" onclick="revealPass()" id="showPass" > Show Password</td>
 </tr>
 <tr>

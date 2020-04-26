@@ -132,7 +132,7 @@ if(!isset($_SESSION['login_user'])){
              
                 <tr>
                 <td><label>Password</label></td>
-                <td>  <input type="password" id="userPwd" onClick="this.select();" name="userPwd" value="<?php echo $row['userPwd'] ?>"></td>
+                <td>  <input type="password" id="userPwd" onClick="this.select();" name="userPwd"></td>
                 <td style="padding-left:20px"><input type="checkbox" name="option" onchange="revealPass()" >  Show Password </td>
             
                 </tr>

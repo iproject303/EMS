@@ -9,9 +9,33 @@ require'mysql.php';
   $pass=md5($userPwd);
   $atype=$_POST["atype"];
 
+ if("" == trim($_POST['userName']) && isset($_POST['userPwd']))
+{
+   
+    echo "<script> 
+     
+        
+        alert('User Name Cannot be Empty');
+        window.location.replace(\"useraccounts.php\");
+        
+        </script>";
+}
+else if("" == trim($_POST['userPwd']) && isset($_POST['userName']))
+{
+    $sql="update tbl_User SET user_name='$username',userType='$atype' where userId=$userid";
+    mysqli_query($conn,$sql);
+    
+    echo "<script> 
+     
+        
+        alert('Succesfully Updated User $username');
+        window.location.replace(\"useraccounts.php\");
+        
+        </script>";
+}
 
-if((!empty($userid) && !empty($username) && !empty($userPwd) && !empty($atype))){
-$sql="update tbl_User SET user_name='$username',userPwd='$pass',userType='$atype' where userId=$userid";
+else if(isset($_POST['userPwd'])){
+$sql="update tbl_User SET userPwd='$pass',userType='$atype' where userId=$userid";
 mysqli_query($conn,$sql);
     
     echo "<script> 
@@ -22,15 +46,7 @@ mysqli_query($conn,$sql);
         
         </script>";
 }
-else{    
-    echo "<script> 
-     
-        
-        alert('Error updating user, Please ensure all the fields are correctly entered');
-        window.location.replace(\"useraccounts.php\");
-        
-        </script>";
-}
+
 mysqli_close($conn);
 
 ?>
