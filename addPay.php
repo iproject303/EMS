@@ -7,22 +7,12 @@ require 'mysql.php';
   $startDate=$_POST["start_date"];
   $endDate=$_POST["end_date"];
   $wh=(double)$_POST["work_hours"];
-  $rph=(int)$_POST["rph"];
-  $ot=(double)$_POST["o/t_hours"];
-  $rphOT=(int)$_POST["rph_ot"];
+  $rph=(double)$_POST["rph"];
+  $ot=(double)$_POST["ot_hours"];
+  $rphOT=(double)$_POST["rph_ot"];
   $sal= ($wh*$rph)+($ot*$rphOT);
+  $paystat="Waiting for Approval";
 
-  $startTimeStamp = strtotime($startDate);
-  $endTimeStamp = strtotime($endDate);
-  
-  $timeDiff = abs($endTimeStamp - $startTimeStamp);
-  
-  $numberDays = $timeDiff/86400;  // 86400 seconds in one day
-  
-  // and you might want to convert to integer
-  $numberDays = intval($numberDays);
-
-if(isset($_POST['addPay'])){
 if(empty($empid))
 {
   echo "<script> 
@@ -34,7 +24,7 @@ if(empty($empid))
 }
 else{
 
-  $sql2 = "insert into tbl_payments (emp_id,start_date,end_date,work_hours,ot_hours,salary) VALUES ($empid,'$startDate','$endDate',$wh,$ot,$sal)";
+  $sql2 = "insert into tbl_payments (emp_id,start_date,end_date,work_hours,ot_hours,salary,paystat) VALUES ($empid,'$startDate','$endDate',$wh,$ot,$sal,'$paystat')";
   if(mysqli_query($conn,$sql2))
   {
     
@@ -63,5 +53,5 @@ else{
   }
 mysqli_close($conn);
 }
-}
+
 ?>

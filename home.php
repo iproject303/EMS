@@ -9,7 +9,7 @@ if(!isset($_SESSION['login_user'])){
 
   if($_SESSION['userType']=="Accountant")
   {
-    $userCtrl="display:none";
+    $hideattr="hidden";
   }
 
   $sql= "select * from tbl_employees ";
@@ -46,22 +46,36 @@ if(!isset($_SESSION['login_user'])){
 </head>
 
 <body id="page-top" onload="startTime()" >
-<nav class="navbar-dark bg-dark">
- 
-      <a class="navbar-brand" href="home.php">
-          
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+            <a class="navbar-brand" href="home.php">
           <img src="brandicon.png" width="150" height="60" >
           Employee Payroll Management System</a>
-
-          <div class="navbar-brand"  id="time"></div>
-        
-    
-            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+            </li>
+        </ul>
+    </div>
+    <div class="mx-auto order-0">
+        <a class="navbar-nav ml-auto" ></a>
       
-          <a class="navbar-brand" href="logout.php">Logout </a>
-
-    </nav>
-
+            <span class="navbar-brand" id="time"></span>
+</div>
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+        <li class="nav-item" <?php echo $hideattr ?>>
+          <a class="nav-link" href="useraccounts.php">Settings</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="myprofile.php">My Profile</a>
+   
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="logout.php">Logout </a>
+            </li>
+        </ul>
+    </div>
+</nav>
     
 
   <div id="wrapper">
@@ -80,12 +94,12 @@ if(!isset($_SESSION['login_user'])){
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Payments</span></a>
       </li>
-      <li class="nav-item " >
+      <li class="nav-item " <?php echo $hideattr ?>>
         <a class="nav-link" href="payhistory.php">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Payments History</span></a>
       </li>
-      <li class="nav-item" style ="<?php echo $userCtrl ?>">
+      <li class="nav-item" <?php echo $hideattr ?>>
         <a class="nav-link" href="employees.php">
           <i class="fas fa-fw fa-table"></i>
           <span>Employees</span></a>
@@ -100,9 +114,9 @@ if(!isset($_SESSION['login_user'])){
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Welcome <?php echo
+          <span style="font-weight: bold;">Welcome <?php echo
               $_SESSION['login_user'];
-              ?> !</a>
+              ?> !</span>
           </li>
         </ol>
         <table >

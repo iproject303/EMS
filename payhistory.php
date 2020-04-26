@@ -9,12 +9,14 @@ if(!isset($_SESSION['login_user'])){
 
   if($_SESSION['userType']=="Accountant")
   {
-    $userCtrl="display:none";
+    $hideattr="hidden";
   }
- 
-  $sql="select * from tbl_payhistory";
+
+  $sql="select * from tbl_payhistory where paystat!='Paid' ";
   $result=mysqli_query($conn,$sql);
 
+  $sql2="select *from tbl_payhistory where paystat='Paid'";
+  $result2=mysqli_query($conn,$sql2);
 
 ?>
 
@@ -44,12 +46,12 @@ if(!isset($_SESSION['login_user'])){
   <script type="text/javascript" src="formulas.js"></script>
   <script type="text/javascript">
   
-  function search() {
+  function search(tbl,search) {
 
 var input, filter, table, tr, td, i, txtValue;
-input = document.getElementById("searchemp");
+input = document.getElementById(search);
 filter = input.value.toUpperCase();
-table = document.getElementById("editable_table");
+table = document.getElementById(tbl);
 tr = table.getElementsByTagName("tr");
 
 
@@ -66,28 +68,57 @@ for (i = 0; i < tr.length; i++) {
   }
 
 }
-}
+  }
+
+
+
+
+function submitForm(action)
+    {
+
+      document.getElementById('payhform').action = action;
+      document.getElementById('payhform').submit(); 
+        
+       
+  }
 </script>
 
   </head>
 
 <body id="page-top" onload="startTime()" >
-<nav class="navbar-dark bg-dark">
- 
-      <a class="navbar-brand" href="home.php">
-          
+
+
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+            <a class="navbar-brand" href="home.php">
           <img src="brandicon.png" width="150" height="60" >
           Employee Payroll Management System</a>
-
-          <div class="navbar-brand"  id="time"></div>
-        
-    
-            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+            </li>
+        </ul>
+    </div>
+    <div class="mx-auto order-0">
+        <a class="navbar-nav ml-auto" ></a>
       
-          <a class="navbar-brand" href="logout.php">Logout </a>
-
-    </nav>
-
+            <span class="navbar-brand" id="time"></span>
+</div>
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item" <?php echo $hideattr ?>>
+          <a class="nav-link" href="useraccounts.php">Settings</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="myprofile.php">My Profile</a>
+   
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="logout.php">Logout </a>
+            </li>
+        </ul>
+    </div>
+</nav>
   <div id="wrapper">
 
   
@@ -123,9 +154,9 @@ for (i = 0; i < tr.length; i++) {
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Welcome <?php echo
+          <span style="font-weight: bold;">Welcome <?php echo
               $_SESSION['login_user'];
-              ?> !</a>
+              ?> !</span>
           </li>
         </ol>
         
@@ -137,13 +168,13 @@ for (i = 0; i < tr.length; i++) {
         <div class="card mb-3">
           <div class="card-header">
             <i class="fas fa-table"></i>
-           Payments History</div>
+          Ongoing Payments </div>
           <div class="card-body">
           <div align="right">
             <label> <b> Search : </b> </label>
-            <input type="text" id="searchemp" onkeyup="search()"></div>
+            <input type="text" id="searchpay" onkeyup="search('tbl_pay','searchpay')"></div>
             <div class="table-responsive">
-            <table id="editable_table" class="table table-bordered" >
+            <table id="tbl_pay" class="table table-bordered" >
                 <thead>
                   <tr>
                 <th>Employee ID</th>    
@@ -155,7 +186,7 @@ for (i = 0; i < tr.length; i++) {
                 <th>Salary ($)</th>
                 <th>Payment Added Date</th>
                 <th>Pay Status</th>
-                <form action="deletePay.php" method="post" >
+                <form id="payhform" method="post" >
                 <th><input type="checkbox" class="checkbox" name="selectKey[]" onclick="selectAll()"></th>
                 </tr>
                 </thead>
@@ -182,11 +213,75 @@ for (i = 0; i < tr.length; i++) {
         
               }
                ?>
+              
 
                   
                </tbody>
               </table>
-             
+              <div align="right">
+              <input name="btnpay" type="submit" value ="Pay" class="btn btn-info" onclick="submitForm('pay.php')">
+           
+              <input name="btnamend" type="submit" value ="Amend" class="btn btn-info" onclick="submitForm('amendPay.php')">
+            </form>
+            </div>
+            </div>
+          </div>
+          
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+           Payments History</div>
+          <div class="card-body">
+          <div align="right">
+            <label> <b> Search : </b> </label>
+            <input type="text" id="searchhis" onkeyup="search('tbl_his','searchhis')"></div>
+            <div class="table-responsive">
+            <table id="tbl_his" class="table table-bordered" >
+                <thead>
+                  <tr>
+                <th>Employee ID</th>    
+                <th>Payment ID</th>
+                <th>Employee Name</th>
+                <th>Start date</th>
+                <th>End date</th>
+                <th>Total Hours</th>  
+                <th>Salary ($)</th>
+                <th>Payment Added Date</th>
+                <th>Pay Status</th>
+                <form method="post">
+                </tr>
+                </thead>
+                <tbody>
+               <?php while($row2=mysqli_fetch_array($result2))
+              {
+
+                echo '
+                <tr>
+                <td>'.$row2["emp_id"].'</td>
+                <td>'.$row2["pay_id"].'</td>
+                <td>'.$row2["emp_name"].'</td>
+                <td>'.$row2["start_date"].'</td>
+                <td>'.$row2["end_date"].'</td>
+                <td>'.$row2["tot_hours"].'</td>
+                <td>'.$row2["salary"].'</td>
+                <td>'.$row2["pay_date"].'</td>
+                <td>'.$row2["paystat"].'</td>
+               
+                </tr>
+              ';
+        
+              }
+               ?>
+              
+
+                  
+               </tbody>
+              </table>
+              
+            </form>
+          
             </div>
           </div>
           

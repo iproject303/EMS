@@ -61,3 +61,19 @@ function loadEmp(obj)
   $empid=obj.options[empidindex].text;  
   window.location.href = "payments.php?empid=" + $empid;
 }
+
+
+
+function checkEnter(obj,obj2){
+
+  var value = document.getElementById(obj).value;
+  var rgex = /^[0-9]*$/;
+  if(rgex.test(value)){
+  }
+  else{
+    alert("Please enter correct value for "+obj2);
+    document.getElementById(obj).value='';
+  }
+}
+
+

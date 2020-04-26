@@ -1,3 +1,24 @@
+<?php
+include 'login.php';
+require 'mysql.php';
+
+
+if(!isset($_SESSION['login_user'])){
+  header("location: index.php");
+  }
+
+  if($_SESSION['userType']=="Accountant")
+  {
+    $hideattr="hidden";
+  }
+  
+  $username= $_SESSION['userid'];
+  $sql="select * from tbl_User where userId='$username' ";
+  $result=mysqli_query($conn,$sql);
+  $row=mysqli_fetch_array($result);
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,31 +41,51 @@
   <!-- Custom styles for this template-->
   <link href="css/sb-admin.css" rel="stylesheet">
   <script>
-    function changeType()
-    {
-        document.profile.password.type=(document.profile.option.value=(document.profile.option.value==1)?'-1':'1')=='1'?'password':'text';
+    function revealPass(){
+    var x = document.getElementById("userPwd");
+    if (x.type === "password") {
+      x.type = "text";
+    } else {
+      x.type = "password";
     }
+  
+
+}
 </script>
 <script type="text/javascript" src="sysTime.js"> </script>
 </head>
 
 <body id="page-top" onload="startTime()" >
-<nav class="navbar-dark bg-dark">
- 
-      <a class="navbar-brand" href="home.php">
-          
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+            <a class="navbar-brand" href="home.php">
           <img src="brandicon.png" width="150" height="60" >
           Employee Payroll Management System</a>
-
-          <div class="navbar-brand"  id="time"></div>
-        
-    
-            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+            </li>
+        </ul>
+    </div>
+    <div class="mx-auto order-0">
+        <a class="navbar-nav ml-auto" ></a>
       
-          <a class="navbar-brand" href="logout.php">Logout </a>
-
-    </nav>
-
+            <span class="navbar-brand" id="time"></span>
+</div>
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item" <?php echo $hideattr ?>>
+          <a class="nav-link" href="useraccounts.php">Settings</a>
+            </li>
+            <li class="nav-item active">
+            <a class="nav-link" href="myprofile.php">My Profile</a>
+   
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="logout.php">Logout </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 
   <div id="wrapper">
@@ -60,9 +101,9 @@
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Welcome <?php echo
+            <span style="font-weight: bold;">Welcome <?php echo
               $_SESSION['login_user'];
-              ?> !</a>
+              ?> !</span>
           </li>
         </ol>
         
@@ -77,35 +118,33 @@
           <div class="card-body">
             <div class="table-responsive">
               <div style="padding-top:20px">
-                <form name="profile">
+                <form name="profile" method="post" action="updateProfile.php">
                   <table >
                <tr >
                 
-               <td><label>My Id</label></td>
-               <td><input type="text" name="empID" > </td>
-                <td style="padding-left:50px"><label>Full Name</label></td>
-                <td style="padding-left:50px"><input type="text" name="empName" ></td>
+               <td><label>My ID</label></td>
+               <td><input type="text" name="userId" readonly value="<?php echo $row['userId'] ?>"> </td>
+</tr>
+<tr>
+                <td ><label>User Name</label></td>
+                <td ><input type="text" name="username" value="<?php echo $row['user_name'] ?>"></td>
                 </tr>
-                <tr>
-                <td><label>Home address</label></td>
-                <td><input type="text" name="address" ></td>
-                <td style="padding-left:50px"><label>Mobile No</label></td>
-                <td style="padding-left:50px"> <input type="text" name="mobilen" ></td>
-                </tr>
+             
                 <tr>
                 <td><label>Password</label></td>
-                <td>  <input type="password" name="password">
-                <input type="checkbox" name="option" value='1' onchange="changeType()"><label>View Password </label></td>
+                <td>  <input type="password" id="userPwd" onClick="this.select();" name="userPwd" value="<?php echo $row['userPwd'] ?>"></td>
+                <td style="padding-left:20px"><input type="checkbox" name="option" onchange="revealPass()" >  Show Password </td>
             
                 </tr>
                 <tr>
                 <td><form>
                 <br>
-                <input type ="submit" value="Update Details">
+                <input type ="submit" value="Update Details" class="btn btn-info"> 
                 </form>
                 </td>
                 </tr>
                 </table>
+                <p style="color:red">Please Logout and Login to make changes! </p>
                   </form>
                 
             

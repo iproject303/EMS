@@ -10,16 +10,20 @@ if (isset($_POST['submit'])) {
     }
     else{
 
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        $userType ='';
+       
 
-        $query = "SELECT userId, userPwd, userType from tbl_User where userId=? AND userPwd=?";
+        $userid = $_POST['username'];
+        $password = $_POST['password'];
+        $password1=md5($password);
+        $userType ='';
+        $_SESSION['userid']=$userid;
+
+        $query = "SELECT user_name , userPwd, userType from tbl_User where userId=? AND userPwd=?";
 
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ss", $username, $password);
+        $stmt->bind_param("ss", $userid, $password1);
         $stmt->execute();
-        $stmt->bind_result($username, $password,$userType);
+        $stmt->bind_result($username, $password1,$userType);
         $stmt->store_result();
             if($stmt->fetch()) {
                 $_SESSION['login_user'] = $username; 

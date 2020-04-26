@@ -2,37 +2,18 @@
 <?php
 include 'login.php';
 require 'mysql.php';
+require 'updateGET.php';
 
 
 if($_SESSION['userType']=="Accountant")
-  {
-    $userCtrl="display:none";
-  }
-  else{
-    $userCtrl="";
-  }
-
+{
+  $hideattr="hidden";
+}
   $sql= "select * from tbl_employees ";
   $result=mysqli_query($conn,$sql);
 
 
-  if(isset($_GET['edit']))
-  {
-  $empid= $_GET['edit'];
-  $sql1="select * from tbl_employees where emp_Id=$empid";
-  $result1=mysqli_query($conn,$sql1);
-  $row=mysqli_fetch_array($result1);
-
-  $hiddenattr="hidden";
-  $colattr="Update";
-  $idattr="readonly";
   
-  }
-  else{
-    $colattr="Add";
-    $btnCancel="hidden";
-
-  }
 ?>
 
 <!DOCTYPE html>
@@ -94,24 +75,15 @@ function search() {
   }
 }
 
-function myFunction() {
- 
-}
 
 
 function submitForm(action)
     {
-      var number = document.getElementById('empno').value;
-      var compare = "/^[0-9]{1,10}$/g";
-      if (number.match(compare)) {
-        return true;
+    
         document.getElementById('empform').action = action;
         document.getElementById('empform').submit();
 
-      } else {
-       alert(number);
-      return false;
-  }
+     
         
     }
 
@@ -120,21 +92,36 @@ function submitForm(action)
 </head>
 
 <body id="page-top" onload="startTime()">
-<nav class="navbar-dark bg-dark">
- 
-      <a class="navbar-brand" href="home.php">
-          
+<nav class="navbar navbar-expand -md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 ">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+            <a class="navbar-brand" href="home.php">
           <img src="brandicon.png" width="150" height="60" >
           Employee Payroll Management System</a>
-
-          <div class="navbar-brand"  id="time"></div>
-        
-    
-            <a class="navbar-brand" href="myprofile.php">My Profile</a>
+            </li>
+        </ul>
+    </div>
+    <div class="mx-auto order-1">
+        <a class="navbar-nav ml-auto" ></a>
       
-          <a class="navbar-brand" href="logout.php">Logout </a>
-
-    </nav>
+            <span class="navbar-brand" id="time"></span>
+</div>
+    <div class="navbar-collapse collapse w-100 order-2">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item" <?php echo $hideattr ?>>
+          <a class="nav-link" href="useraccounts.php">Settings</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="myprofile.php">My Profile</a>
+   
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="logout.php">Logout </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
   
 
@@ -175,9 +162,9 @@ function submitForm(action)
         <!-- Breadcrumbs-->
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="#">Welcome <?php echo
+          <span style="font-weight: bold;">Welcome <?php echo
               $_SESSION['login_user'];
-              ?> !</a>
+              ?> !</span>
           </li>
         </ol>
         
@@ -186,11 +173,11 @@ function submitForm(action)
         <!-- Area Chart Example-->
         
         
-        </div>
+     
         <div class="card mb-3">
           <div class="card-header">
             <i class="fas fa-table"></i>
-           <?php echo $colattr;?> Employee</div>
+           <?php echo $colemp;?> Employee</div>
           <div class="card-body">
             <div class="table-responsive">
               <div  style="padding-top:20px">
@@ -200,7 +187,7 @@ function submitForm(action)
                   <col width ="100">
       <tr>
                 <td>
-                <label>Employee Id</label> </td>
+                <label>Employee ID</label> </td>
                 <td>
                  <input <?php echo $idattr; ?> type="text" name="empId" value="<?php echo $row['emp_Id']; ?>" > </td>
                
@@ -222,7 +209,7 @@ function submitForm(action)
                 <td>
                 <label>Mobile No</label></td>
                 <td>
-                <input type="text" id="empno"  name="empNo"value="<?php echo $row['emp_no']; ?>" ></td>
+                <input type="text" id="empno" maxlength="10" onfocusout="checkEnter('empno','Mobile No')"  name="empNo"value="<?php echo $row['emp_no']; ?>" ></td>
 </tr>
 <tr>
                 <td>
@@ -232,18 +219,18 @@ function submitForm(action)
 
                 if(isset($_GET['edit'])){
                 
-                  if($row['staff_type']=="ACADEMIC")
+                  if($row['staff_type']=="Academic")
                   {
                   echo'
-                  <option selected="selected" value="ACADEMIC">ACADEMIC</option>
-                  <option value="NON-ACADEMIC">NON-ACADEMIC</option>
+                  <option selected="selected" value="Academic">Academic</option>
+                  <option value="Non-Academic">Non-Academic</option>
                   ';
                   }
                   else 
                   {
                     echo'
-                    <option value="ACADEMIC">ACADEMIC</option>
-                    <option selected="selected" value="NON-ACADEMIC">NON-ACADEMIC</option>
+                    <option value="Academic">Academic</option>
+                    <option selected="selected" value="Non-Academic">Non-Academic</option>
                   ';
                   }
                 }
@@ -267,9 +254,8 @@ function submitForm(action)
 <tr>
  
   <td>
-             <input type ="submit" value="Add Employee" id="btnadd" <?php echo $hiddenattr; ?> class="btn btn-info" onclick="submitForm('addEmp.php')"></td>
-            <td> <input type =submit id="updatebtn" value ="Update Employee" class="btn btn-info" <?php echo $btnCancel; ?> onclick="submitForm('updateEmp.php')"></td>
-            <td><input type =submit id="clearbtn" value ="Cancel" class="btn btn-info" <?php echo $btnCancel; ?> onclick="clear();window.history.go(-1); return false;" >
+             <input type ="submit" value="<?php echo $colemp ?> Employee" id="btnadd" class="btn btn-info" onclick="submitForm('<?php echo $fileemp ?>')"></td>
+            <td><input type =submit id="clearbtn" value ="Cancel" class="btn btn-info" onclick="clear();window.history.go(-1); return false;" >
            </form>
   </td>
 
@@ -292,6 +278,7 @@ function submitForm(action)
              
             </div>
           </div>
+
         <div class="card mb-3">
           <div class="card-header">
             <i class="fas fa-table"></i>
@@ -312,7 +299,7 @@ function submitForm(action)
                 <th>Staff Type</th>
                 <th <?php echo $hiddenattr ?> ></th>
                 <form action="deleteEmp.php" method="post" >
-                <th <?php echo $hiddenattr?> ><input type="checkbox" class="checkbox" name="selectKey[]" onclick="selectAll()"></th>
+                <th <?php echo $hideemp?> ><input type="checkbox" class="checkbox" name="selectKey[]" onclick="selectAll()"></th>
                 
               </tr>
               </thead>

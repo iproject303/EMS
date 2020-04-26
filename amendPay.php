@@ -3,7 +3,7 @@
 require'mysql.php';
 
     
-if(isset($_POST['btnDelete']))
+if(isset($_POST['btnamend']))
     {
         
         $chkarr=$_POST['deleteKey'];
@@ -11,9 +11,9 @@ if(isset($_POST['btnDelete']))
         foreach ($chkarr as $id)
         {   
             
-            $tdate=date("Y-m-d");
+         
            
-            $sql="select tbl_payments.*,tbl_employees.emp_name from tbl_payments,tbl_employees where tbl_payments.emp_id=tbl_employees.emp_Id AND tbl_payments.pay_id=".$id;
+            $sql="select emp_id,pay_id,start_date,end_date,work_hours,ot_hours,salary from tbl_payhistory where pay_id=$id";
             $result=mysqli_query($conn,$sql);
             while($row=mysqli_fetch_array($result))
             {
@@ -23,24 +23,22 @@ if(isset($_POST['btnDelete']))
             $edate=$row['end_date'];
             $wh=(double)$row['work_hours'];
             $ot=(double)$row['ot_hours'];
-            $tot=$wh+$ot;
             $sal=(double)$row['salary'];
-            $empname=$row['emp_name'];
-            $paystat="Not-Paid";
+            $paystat="Amend";
 
            
-            $sql2="insert into tbl_payhistory values($empid,$payid,'$empname','$sdate','$edate',$wh,$ot,$tot,$sal,'$tdate','$paystat');";
+            $sql2="insert into tbl_payments values ($payid,$empid,'$sdate','$edate',$wh,$ot,$sal,'$paystat');";
             mysqli_query($conn,$sql2);
 
-            $sql3="delete from tbl_payments where emp_id=$empid AND pay_id=$id";
+            $sql3="delete from tbl_payhistory where pay_id=$id";
             mysqli_query($conn,$sql3);
             }
             
         echo "<script> 
      
         
-        alert('Succesfully added $count Payment record(s) for approval');
-        window.location.replace(\"payments.php\");
+        alert('Succesfully sent to revise $count Payment record(s)');
+        window.location.replace(\"payhistory.php\");
         
         </script>";
 

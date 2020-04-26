@@ -9,15 +9,11 @@ require 'mysql.php';
   $empno=(int)$_POST["empNo"];
   $staff=$_POST["stype"];
 
-if(empty($empid))
+if((!empty($empid) && !empty($empname) && !empty($empAd) && !empty($empno) && !empty($staff)))
 {
- header("location:employees.php");
-}
-else{
-
   $sql2 = "insert into tbl_employees VALUES ($empid,'$empname','$empAd',$empno,'$staff')";
-  if(mysqli_query($conn,$sql2))
-  {
+  mysqli_query($conn,$sql2);
+
     
     echo "<script> 
      
@@ -26,21 +22,35 @@ else{
         window.location.replace(\"employees.php\");
         
         </script>";
-    
-  }
-  
-  else
-  {
-    echo "<script> 
+
+}
+
+else{
+  echo "<script> 
      
         
-        alert('Error adding Employee, Please ensure all the fields are correctly entered.');
-        window.location.replace(\"employees.php\");
-        
-        </script>";
- 
-  }
+  alert('Error adding Employee, Please ensure all the fields are correctly entered.');
+  window.location.replace(\"employees.php\");
+  
+  </script>";
+  
 mysqli_close($conn);
+}
+
+
+
+function msgError($obj)
+{
+
+
+  echo "<script>   
+
+  alert('Enter Value for the field -'.$obj.'');
+  window.location.replace(\"employees.php\");
+  
+  </script>";
+
+
 }
 
 ?>
